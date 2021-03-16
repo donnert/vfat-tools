@@ -29,16 +29,18 @@ async function main() {
  
    await loadBscChefContract(App, tokens, prices, FALAFEL_CHEF, FALAFEL_CHEF_ADDR, FALAFEL_CHEF_ABI, rewardTokenTickerFalafel,
        "falafel", null, rewardsPerWeekFalafel, "pendingFalafel", null, true);
-
+       _print('---------------------------------------------------------------')
+  
   const SAIL_CHEF_ADDR = "0x2d54f0293AA8B72b0b24D620D83d060Cc3d20F9D";
   const rewardTokenTickerSail = "SAIL";
   const SAIL_CHEF = new ethers.Contract(SAIL_CHEF_ADDR, SAIL_CHEF_ABI, App.provider);
 
   const rewardsPerWeekSail = await SAIL_CHEF.sailPerBlock() /1e18
         * 604800 / 3;
-
+  
   await loadBscChefContract(App, tokens, prices, SAIL_CHEF, SAIL_CHEF_ADDR, SAIL_CHEF_ABI, rewardTokenTickerSail,
       "sail", null, rewardsPerWeekSail, "pendingSail", null, true);
+      _print('---------------------------------------------------------------')
 
 
       const BENDER_CHEF_ADDR = "0x26688ADFcF98737d75CB308A1B10b47252bcf306";
@@ -48,11 +50,11 @@ async function main() {
       const rewardsPerWeekBender = await BENDER_CHEF.benderPerBlock() /1e18
            * 604800 / 3;
    
-   
        await loadBscChefContract(App, tokens, prices, BENDER_CHEF, BENDER_CHEF_ADDR, BENDER_CHEF_ABI, rewardTokenTickerBender,
            "bender", null, rewardsPerWeekBender, "pendingBender", [1], true);
 
-
+           _print('---------------------------------------------------------------')
+  
                 const PANCAKE_CHEF_ADDR = "0x73feaa1eE314F8c655E354234017bE2193C9E24E";
                 const rewardTokenTickerCake = "CAKE";
                 const PANCAKE_CHEF = new ethers.Contract(PANCAKE_CHEF_ADDR, PANCAKE_CHEF_ABI, App.provider);
