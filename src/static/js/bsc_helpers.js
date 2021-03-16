@@ -382,16 +382,14 @@ async function getBscPoolInfo(App, chefContract, chefAddress, poolIndex, pending
 
 async function loadBscChefContract(App, tokens, prices, chef, chefAddress, chefAbi, rewardTokenTicker,
   rewardTokenFunction, rewardsPerBlockFunction, rewardsPerWeekFixed, pendingRewardsFunction,
-  deathPoolIndices) {
+  deathPoolIndices, onlyStaked = false) {
   const chefContract = chef ?? new ethers.Contract(chefAddress, chefAbi, App.provider);
 
   const poolCount = parseInt(await chefContract.poolLength(), 10);
   const totalAllocPoints = await chefContract.totalAllocPoint();
     
-  _print(`<a href='https://bscscan.com/address/${chefAddress}' target='_blank'>Staking Contract</a>`);
-  _print(`Found ${poolCount} pools.\n`)
-
-  _print(`Showing incentivized pools only.\n`);
+  _print(`<a href='https://bscscan.com/address/${chefAddress}' target='_blank'>Staking Contract (${poolCount} Pools)</a>`);
+  // _print(`Showing incentivized pools only.\n`);
 
   var tokens = {};
 
@@ -413,20 +411,20 @@ async function loadBscChefContract(App, tokens, prices, chef, chefAddress, chefA
   if (deathPoolIndices) {   //load prices for the deathpool assets
     deathPoolIndices.map(i => poolInfos[i])
                      .map(poolInfo => 
-      poolInfo.poolToken ? getPoolPrices(tokens, prices, poolInfo.poolToken, "bsc") : undefined);
+      poolInfo.poolToken ? getPoolPrices(tokens, prices, poolInfo.poolToken, "bsc", onlyStaked) : undefined);
   }
 
-  const poolPrices = poolInfos.map(poolInfo => poolInfo.poolToken ? getPoolPrices(tokens, prices, poolInfo.poolToken, "bsc") : undefined);
+  const poolPrices = poolInfos.map(poolInfo => poolInfo.poolToken ? getPoolPrices(tokens, prices, poolInfo.poolToken, "bsc", onlyStaked) : undefined);
 
 
-  _print("Finished reading smart contracts.\n");    
+  // _print("Finished reading smart contracts.\n");    
 
   let aprs = []
   for (i = 0; i < poolCount; i++) {
     if (poolPrices[i]) {
       const apr = printChefPool(App, chefAbi, chefAddress, prices, tokens, poolInfos[i], i, poolPrices[i],
         totalAllocPoints, rewardsPerWeek, rewardTokenTicker, rewardTokenAddress,
-        pendingRewardsFunction, null, null, "bsc")
+        pendingRewardsFunction, null, null, "bsc", onlyStaked)
       aprs.push(apr);
     }
   }
@@ -441,7 +439,7 @@ async function loadBscChefContract(App, tokens, prices, chef, chefAddress, chefA
     }
   }
   averageApr = averageApr / totalUserStaked;
-  _print_bold(`Total Staked: $${formatMoney(totalStaked)}`);
+  if(!onlyStaked) _print_bold(`Total Staked: $${formatMoney(totalStaked)}`);
   if (totalUserStaked > 0) {
     _print_bold(`\nYou are staking a total of $${formatMoney(totalUserStaked)} at an average APR of ${(averageApr * 100).toFixed(2)}%`)
     _print(`Estimated earnings:`
