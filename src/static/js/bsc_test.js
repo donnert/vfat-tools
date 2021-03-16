@@ -15,6 +15,10 @@ async function main() {
 
   _print(`Initialized ${App.YOUR_ADDRESS}\n`);
 
+                 
+  const tokens = {};
+  const prices = await getBscPrices();
+
      
   const FALAFEL_CHEF_ADDR = "0x4bF59cfE01F723bBe2D7FaE6590172771cbeda46";
   const rewardTokenTickerFalafel = "FALAFEL";
@@ -55,10 +59,7 @@ async function main() {
                
                 const rewardsPerWeekCake = await PANCAKE_CHEF.cakePerBlock() /1e18
                      * 604800 / 3;
-               
-                 const tokens = {};
-                 const prices = await getBscPrices();
-               
+
                  await loadBscChefContract(App, tokens, prices, PANCAKE_CHEF, PANCAKE_CHEF_ADDR, PANCAKE_CHEF_ABI, rewardTokenTickerCake,
                      "cake", null, rewardsPerWeekCake, "pendingCake", null, true);
                
